@@ -16,7 +16,7 @@ require 'partials/header.php'; ?>
         // Je récupère les résultats de la requête sous forme de tableau
         $categories = $query->fetchAll();
         // Autre solution pour écrire la requête
-        $categories = $db->query('SELECT * FROM category')->fetchAll();
+        // $categories = $db->query('SELECT * FROM category')->fetchAll();
         // var_dump($categories);
         // A vous de jouer : Afficher proprement les catégories en parcourant
         // le tableau. On va essayer d'avoir un affichage en "colonne", c'est-à-dire
@@ -26,9 +26,62 @@ require 'partials/header.php'; ?>
         // 1: Films de gangsters          2: Action
         // 3: Horreur                     4: Science-fiction
         // 5: Thriller
+
+        $query = $db->query('SELECT * FROM movie ORDER BY released_at DESC LIMIT 9');
+        $lastMovies = $query->fetchAll();
+
+        $query = $db->query('SELECT * FROM movie ORDER BY RAND() LIMIT 4');
+        $randMovies = $query->fetchAll();
         ?>
 
+        <div class="carousel">
+        <?php foreach ($lastMovies as $movie) { ?>
+            <div class="carousel-item">
+            </div>
+
+        
+        </div>
+        
+        <h2>Sélection de films aléatoires</h2>
         <div class="row">
+            <?php foreach ($randMovies as $movie) { ?>
+                <div class="col-3">
+                    <div class="card shadow mb-4">
+                        <img class="card-img-top" src="uploads/movies/<?= $movie['cover']; ?>" />
+                        <div class="card-body">
+                            <h2 class="card-title"><?= $movie['title']; ?></h2>
+                            <p class="card-text">
+                                Sorti en <?= substr($movie['released_at'], 0, 4); ?>
+                            </p>
+                            <p class="card-text">
+                                <?= $movie['description']; ?>
+                            </p>
+
+                            <div class="d-grid">
+                                <a href="./film.php?id=<?= $movie['id']; ?>" class="btn btn-danger">Voir le film</a>
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-muted">
+                            <?php
+                            // Représente la note du film
+                            $note = rand(0, 5);
+                            for ($i = 0; $i < 5; $i++) {
+                                if ($i < $note) {
+                                    echo '★';
+                                } else {
+                                    echo '☆';
+                                }
+                            } ?>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+
+       
+        <div class="row">
+        <h2>Catégories</h2>
             <?php foreach ($categories as $category) { ?>
                 <div class="col-6">
                     <?= $category['id']; ?> : <?= $category['name']; ?>
